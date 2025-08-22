@@ -15,15 +15,15 @@ ADeocGuCharacter::ADeocGuCharacter ( )
 	GetCharacterMovement ( )->bSnapToPlaneAtStart = true;
 
 	bUseControllerRotationPitch = false;
-	bUseControllerRotationRoll = false;
-	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll  = false;
+	bUseControllerRotationYaw   = false;
 }
 
-void ADeocGuCharacter::PossessedBy ( AController* NewController )
+void ADeocGuCharacter::PossessedBy(AController* NewController )
 {
-	Super::PossessedBy ( NewController );
+	Super::PossessedBy(NewController );
 
-	InitAbilityActorInfo ( );
+	InitAbilityActorInfo();
 }
 
 void ADeocGuCharacter::OnRep_PlayerState ( )
@@ -37,8 +37,8 @@ void ADeocGuCharacter::OnRep_PlayerState ( )
 void ADeocGuCharacter::InitAbilityActorInfo ( )
 {
 	ADGPlayerState* DGPlayerState = GetPlayerState<ADGPlayerState> ( );
-	check ( DGPlayerState );
-	DGPlayerState->GetAbilitySystemComponent ( )->InitAbilityActorInfo ( DGPlayerState , this );
-	AbilitySystemComponent = DGPlayerState->GetAbilitySystemComponent ( );
-	AttributeSet = DGPlayerState->GetAttributeSet ( );
+	check(DGPlayerState);
+	DGPlayerState->GetAbilitySystemComponent()->InitAbilityActorInfo (DGPlayerState, this );
+	AbilitySystemComponent = DGPlayerState->GetAbilitySystemComponent();
+	AttributeSet = DGPlayerState->GetAttributeSet();
 }

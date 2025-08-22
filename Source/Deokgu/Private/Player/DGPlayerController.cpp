@@ -4,27 +4,36 @@
 #include "Player/DGPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "GameFramework/PlayerController.h"
 
 ADGPlayerController::ADGPlayerController ( )
 {
-
-}
-
-void ADGPlayerController::PlayerTick ( float DeltaTime )
-{
-
+	bReplicates = true;
 }
 
 void ADGPlayerController::BeginPlay ( )
 {
-	
+	Super::BeginPlay();
+	check ( DeocGuContext );
+
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+	check ( Subsystem );
+	Subsystem->AddMappingContext(DeocGuContext, 0);
+
+	bShowMouseCursor = true;
+	DefaultMouseCursor = EMouseCursor::Default;
+
+	FInputModeGameAndUI InputModeData;
+	InputModeData.SetLockMouseToViewportBehavior ( EMouseLockMode::DoNotLock );
+	InputModeData.SetHideCursorDuringCapture(false);
+	SetInputMode ( InputModeData );
 }
 
 void ADGPlayerController::SetupInputComponent ( )
 {
 	Super::SetupInputComponent();
 
-	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent> ( InputComponent );
+	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
 
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ADGPlayerController::GDMove);
 }
@@ -33,7 +42,7 @@ void ADGPlayerController::GDMove( const FInputActionValue& InputActionValue )
 {
 	const FVector2D InputAxisVector = InputActionValue.Get<FVector2D> ( );
 
-	const FRotator Rotation = GetControlRotation ( );
+	const FRotator Rotation = GetControlRotation();
 	const FRotator YawRotation ( 0.0f , Rotation.Yaw , 0.0f );
 
 	const FVector ForwardDirection = FRotationMatrix ( YawRotation ).GetUnitAxis ( EAxis::X );
@@ -42,7 +51,7 @@ void ADGPlayerController::GDMove( const FInputActionValue& InputActionValue )
 	if (APawn* ControlledPawn = GetPawn<APawn> ( ))
 	{
 		ControlledPawn->AddMovementInput ( ForwardDirection , InputAxisVector.Y );
-		ControlledPawn->AddMovementInput ( RightDirection , InputAxisVector.X );
+		ControlledPawn->AddMovementInput (   RightDirection , InputAxisVector.X );
 	}
 }
 

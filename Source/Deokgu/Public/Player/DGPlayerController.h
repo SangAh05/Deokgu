@@ -21,10 +21,8 @@ class DEOKGU_API ADGPlayerController : public APlayerController
 	
 public:
 	ADGPlayerController();
-	virtual void PlayerTick(float DeltaTime) override;
 
 protected:
-
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
@@ -35,8 +33,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> MoveAction;
 
-	void GDMove ( const FInputActionValue& InputActionValue );
-
+	void GDMove(const FInputActionValue& InputActionValue);
 
 	void CursorTrace();
 };
