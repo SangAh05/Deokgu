@@ -33,11 +33,23 @@ public:
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS ( UDGAttributeSet , MaxHealth );
 
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Stamina, Category = "vital Attributes" )
+	FGameplayAttributeData Stamina;
+	ATTRIBUTE_ACCESSORS ( UDGAttributeSet , Stamina );
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxStamina, Category = "vital Attributes" )
+	FGameplayAttributeData MaxStamina;
+	ATTRIBUTE_ACCESSORS ( UDGAttributeSet , MaxStamina );
+
 	UFUNCTION()
 	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
 
 	UFUNCTION()
 	void OnRep_MaxHealth ( const FGameplayAttributeData& OldMaxHealth ) const;
 
+	UFUNCTION()
+	void OnRep_Stamina(const FGameplayAttributeData& OldStamina) const;
 
+	UFUNCTION()
+	void OnRep_MaxStamina( const FGameplayAttributeData& OldMaxStamina) const;
 };

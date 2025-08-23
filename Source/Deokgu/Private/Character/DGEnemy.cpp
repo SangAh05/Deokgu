@@ -11,9 +11,8 @@ ADGEnemy::ADGEnemy ( )
 	GetMesh ( )->SetCollisionResponseToChannel ( ECC_Visibility , ECR_Block );
 
 	AbilitySystemComponent = CreateDefaultSubobject<UDGAbilitySystemComponent> ( "AbilitySystemComponent" );
-	AbilitySystemComponent->SetIsReplicated ( true ); // 복제에 관한일을 할 것이다.
+	AbilitySystemComponent->SetIsReplicated ( true ); // 복제에 관한 일을 할 것이다.
 	AbilitySystemComponent->SetReplicationMode ( EGameplayEffectReplicationMode::Minimal );
-
 
 	AttributeSet = CreateDefaultSubobject<UDGAttributeSet> ( "AttributeSet" );
 }
@@ -37,4 +36,5 @@ void ADGEnemy::BeginPlay ( )
 	Super::BeginPlay ( );
 
 	AbilitySystemComponent->InitAbilityActorInfo ( this , this );
+
 }

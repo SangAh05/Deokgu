@@ -18,7 +18,7 @@ ADeocGuCharacter::ADeocGuCharacter ( )
 	GetCharacterMovement ( )->bSnapToPlaneAtStart = true;
 
 	bUseControllerRotationPitch = false;
-	bUseControllerRotationRoll  = false;
+	bUseControllerRotationRoll  = true;
 	bUseControllerRotationYaw   = false;
 
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
@@ -28,7 +28,8 @@ ADeocGuCharacter::ADeocGuCharacter ( )
 	//SpringArmComp->SetRelativeRotation(FRotator(-20.0f, 0.0f, 0.0f));
 	SpringArmComp->SetRelativeLocation ( FVector ( 0.0f , -40.0f , 20.0f ) );
 	SpringArmComp->TargetArmLength = 150.0f;
-	
+	SpringArmComp->bUsePawnControlRotation = true;
+
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 	CameraComp->SetupAttachment(SpringArmComp);
 	CameraComp->bUsePawnControlRotation = false; 

@@ -7,6 +7,9 @@
 #include "InputActionValue.h"
 #include "Math/Vector2D.h" 
 #include "GameFramework/PlayerController.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/Character.h"
+#include "Character/DeocGuCharacter.h"
 
 ADGPlayerController::ADGPlayerController ( )
 {
@@ -16,11 +19,11 @@ ADGPlayerController::ADGPlayerController ( )
 void ADGPlayerController::BeginPlay ( )
 {
 	Super::BeginPlay();
-	check ( DeocGuContext );
+	check ( deocGuContext );
 
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 	check ( Subsystem );
-	Subsystem->AddMappingContext(DeocGuContext, 0);
+	Subsystem->AddMappingContext(deocGuContext, 0);
 
 	//bShowMouseCursor = true;
 	//DefaultMouseCursor = EMouseCursor::Default;
@@ -37,9 +40,13 @@ void ADGPlayerController::SetupInputComponent ( )
 
 	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
 
-	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ADGPlayerController::GDMove);
-	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ADGPlayerController::GDLook);
+	EnhancedInputComponent->BindAction(lookAction  , ETriggerEvent::Triggered, this, &ADGPlayerController::DGLook       );
+	EnhancedInputComponent->BindAction(walkAction  , ETriggerEvent::Started  , this, &ADGPlayerController::DGWalk       );
+	EnhancedInputComponent->BindAction(runAction   , ETriggerEvent::Triggered, this, &ADGPlayerController::DGRun        );
+	EnhancedInputComponent->BindAction(sprintAction, ETriggerEvent::Ongoing  , this, &ADGPlayerController::DGSprintStart);
+	EnhancedInputComponent->BindAction(sprintAction, ETriggerEvent::Completed, this, &ADGPlayerController::DGSprintEnd  );
 
+	EnhancedInputComponent->BindAction(jumpAction  , ETriggerEvent::Started  , this, &ADGPlayerController::DGJump       );
 }
 
 
@@ -48,9 +55,34 @@ void ADGPlayerController::CursorTrace ( )
 
 }
 
-void ADGPlayerController::GDMove( const FInputActionValue& InputActionValue )
+void ADGPlayerController::DGLook ( const FInputActionValue& InputActionValue )
 {
-	const FVector2D InputAxisVector = InputActionValue.Get<FVector2D> ( );
+	const FVector2D Turn = InputActionValue.Get<FVector2D> ( );
+
+	FRotator Rot = GetControlRotation ( );
+	Rot.Pitch = FMath::Clamp ( Rot.Pitch + Turn.Y , minPitch , maxPitch );
+	Rot.Yaw += Turn.X;
+
+	SetControlRotation ( Rot );
+}
+
+void ADGPlayerController::DGWalk( const FInputActionValue& InputActionValue )
+{
+	bIsWalking = true;
+
+	if (me != nullptr)
+	{
+		UCharacterMovementComponent* Move = me->GetCharacterMovement();
+		if (Move != nullptr)
+		{
+			Move->MaxWalkSpeed = walkSpeed; // 예: 220.f
+		}
+	}
+}
+
+void ADGPlayerController::DGRun ( const FInputActionValue& InputActionValue )
+{
+const FVector2D InputAxisVector = InputActionValue.Get<FVector2D> ( );
 
 	const FRotator Rotation = GetControlRotation();
 	const FRotator YawRotation ( 0.0f , Rotation.Yaw , 0.0f );
@@ -65,19 +97,38 @@ void ADGPlayerController::GDMove( const FInputActionValue& InputActionValue )
 	}
 }
 
-void ADGPlayerController::GDLook ( const FInputActionValue& InputActionValue )
+void ADGPlayerController::DGSprintStart ( )
 {
-	const FVector2D Turn = InputActionValue.Get<FVector2D> ( );
+	bIsWalking = false;
 
-	FRotator Rot = GetControlRotation ( );
-	Rot.Pitch = FMath::Clamp ( Rot.Pitch + Turn.Y , minPitch , maxPitch );
-	Rot.Yaw += Turn.X;
-
-	SetControlRotation ( Rot );
+	if (me != nullptr)
+	{
+		UCharacterMovementComponent* Move = me->GetCharacterMovement ( );
+		if (Move != nullptr)
+		{
+			Move->MaxWalkSpeed = sprintSpeed; 
+		}
+	}
 }
 
-void ADGPlayerController::GDJump ( )
+void ADGPlayerController::DGSprintEnd ( )
 {
+	me = Cast<ADeocGuCharacter>(GetPawn());
+	if (me != nullptr)
+	{
+		UCharacterMovementComponent* Move = me->GetCharacterMovement ( );
+		if (Move != nullptr)
+		{
+			Move->MaxWalkSpeed = runSpeed;
+		}
+	}
+}
 
+void ADGPlayerController::DGJump()
+{
+	if (ACharacter* Char = Cast<ACharacter>(GetPawn()))
+	{
+		Char->Jump ( );
+	}
 }
 

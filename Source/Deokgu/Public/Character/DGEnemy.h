@@ -19,7 +19,7 @@ class DEOKGU_API ADGEnemy : public ACharacterBase, public IEnemyInterface
 public:
 	ADGEnemy();
 	
-		/* Enemy Interface */
+	/* Enemy Interface */
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
 	/* end Enemy Interface */
@@ -30,6 +30,4 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
-	
 };
