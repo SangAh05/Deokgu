@@ -22,4 +22,13 @@ public:
 
 private:
 	void InitAbilityActorInfo();
+
+protected:
+	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Camera")
+	class UCameraComponent* CameraComp;
+
+	UPROPERTY(BlueprintReadWrite, EditAnyWhere, Category = "Camera")
+	class USpringArmComponent* SpringArmComp;
+
+	
 };

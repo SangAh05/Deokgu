@@ -6,6 +6,8 @@
 #include "AbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/DGPlayerState.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 
 ADeocGuCharacter::ADeocGuCharacter ( )
 {
@@ -17,6 +19,17 @@ ADeocGuCharacter::ADeocGuCharacter ( )
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll  = false;
 	bUseControllerRotationYaw   = false;
+
+	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
+	SpringArmComp->SetupAttachment(RootComponent);
+	SpringArmComp->bUsePawnControlRotation = true; 
+	SpringArmComp->bDoCollisionTest = false; 
+	SpringArmComp->SetRelativeRotation(FRotator(-20.0f, 0.0f, 0.0f));
+	SpringArmComp->TargetArmLength = 150.0f;
+	
+	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
+	CameraComp->SetupAttachment(SpringArmComp);
+	CameraComp->bUsePawnControlRotation = false; 
 }
 
 void ADeocGuCharacter::PossessedBy(AController* NewController )
