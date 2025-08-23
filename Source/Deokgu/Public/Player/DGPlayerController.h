@@ -33,7 +33,29 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> MoveAction;
 
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> LookAction;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> JumpAction;
+
+private:
+	void CursorTrace ( );
+
+private:
+
+	/* Movement Variables - Turn */
+	UPROPERTY(EditAnywhere, Category = "Move|Default")
+	float minPitch = -60.f;
+
+	UPROPERTY(EditAnywhere, Category = "Move|Default")
+	float maxPitch = 20.f;
+
+private:
 	void GDMove(const FInputActionValue& InputActionValue);
 
-	void CursorTrace();
+	void GDLook(const FInputActionValue& InputActionValue);
+
+	void GDJump();
+
 };

@@ -4,6 +4,8 @@
 #include "Player/DGPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "InputActionValue.h"
+#include "Math/Vector2D.h" 
 #include "GameFramework/PlayerController.h"
 
 ADGPlayerController::ADGPlayerController ( )
@@ -20,13 +22,13 @@ void ADGPlayerController::BeginPlay ( )
 	check ( Subsystem );
 	Subsystem->AddMappingContext(DeocGuContext, 0);
 
-	bShowMouseCursor = true;
-	DefaultMouseCursor = EMouseCursor::Default;
+	//bShowMouseCursor = true;
+	//DefaultMouseCursor = EMouseCursor::Default;
 
-	FInputModeGameAndUI InputModeData;
-	InputModeData.SetLockMouseToViewportBehavior ( EMouseLockMode::DoNotLock );
-	InputModeData.SetHideCursorDuringCapture(false);
-	SetInputMode ( InputModeData );
+	//FInputModeGameAndUI InputModeData;
+	//InputModeData.SetLockMouseToViewportBehavior ( EMouseLockMode::DoNotLock );
+	//InputModeData.SetHideCursorDuringCapture(false);
+	//SetInputMode ( InputModeData );
 }
 
 void ADGPlayerController::SetupInputComponent ( )
@@ -36,6 +38,14 @@ void ADGPlayerController::SetupInputComponent ( )
 	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
 
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ADGPlayerController::GDMove);
+	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ADGPlayerController::GDLook);
+
+}
+
+
+void ADGPlayerController::CursorTrace ( )
+{
+
 }
 
 void ADGPlayerController::GDMove( const FInputActionValue& InputActionValue )
@@ -55,7 +65,19 @@ void ADGPlayerController::GDMove( const FInputActionValue& InputActionValue )
 	}
 }
 
-void ADGPlayerController::CursorTrace ( )
+void ADGPlayerController::GDLook ( const FInputActionValue& InputActionValue )
+{
+	const FVector2D Turn = InputActionValue.Get<FVector2D> ( );
+
+	FRotator Rot = GetControlRotation ( );
+	Rot.Pitch = FMath::Clamp ( Rot.Pitch + Turn.Y , minPitch , maxPitch );
+	Rot.Yaw += Turn.X;
+
+	SetControlRotation ( Rot );
+}
+
+void ADGPlayerController::GDJump ( )
 {
 
 }
+
