@@ -25,6 +25,16 @@ void ADGPlayerController::BeginPlay ( )
 	check ( Subsystem );
 	Subsystem->AddMappingContext(deocGuContext, 0);
 
+	me = Cast<ADeocGuCharacter>(GetPawn());
+	if (me != nullptr)
+	{
+		UCharacterMovementComponent* Move = me->GetCharacterMovement();
+		if (Move != nullptr)
+		{
+			Move->MaxWalkSpeed = runSpeed; 
+		}
+	}
+
 	//bShowMouseCursor = true;
 	//DefaultMouseCursor = EMouseCursor::Default;
 
@@ -68,7 +78,7 @@ void ADGPlayerController::DGLook ( const FInputActionValue& InputActionValue )
 
 void ADGPlayerController::DGWalk( const FInputActionValue& InputActionValue )
 {
-	bIsWalking = true;
+	bIsWalking = !bIsWalking;
 
 	if (me != nullptr)
 	{
@@ -82,7 +92,10 @@ void ADGPlayerController::DGWalk( const FInputActionValue& InputActionValue )
 
 void ADGPlayerController::DGRun ( const FInputActionValue& InputActionValue )
 {
-const FVector2D InputAxisVector = InputActionValue.Get<FVector2D> ( );
+	bIsSprinting = false;
+	bIsRuning = true;
+
+	const FVector2D InputAxisVector = InputActionValue.Get<FVector2D> ( );
 
 	const FRotator Rotation = GetControlRotation();
 	const FRotator YawRotation ( 0.0f , Rotation.Yaw , 0.0f );
@@ -99,7 +112,8 @@ const FVector2D InputAxisVector = InputActionValue.Get<FVector2D> ( );
 
 void ADGPlayerController::DGSprintStart ( )
 {
-	bIsWalking = false;
+	bIsRuning = false;
+	bIsSprinting = true;
 
 	if (me != nullptr)
 	{
@@ -113,6 +127,8 @@ void ADGPlayerController::DGSprintStart ( )
 
 void ADGPlayerController::DGSprintEnd ( )
 {
+	bIsSprinting = false;
+
 	me = Cast<ADeocGuCharacter>(GetPawn());
 	if (me != nullptr)
 	{
