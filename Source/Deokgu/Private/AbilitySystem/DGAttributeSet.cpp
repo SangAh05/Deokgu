@@ -11,6 +11,9 @@ UDGAttributeSet::UDGAttributeSet()
 				   
 	InitStamina    ( 100.0f );
 	InitMaxStamina ( 100.0f );
+
+	InitLives   (0.0f);
+	InitMaxLives(9.0f);
 }
 
 void UDGAttributeSet::GetLifetimeReplicatedProps ( TArray<class FLifetimeProperty>& OutLifetimeProps ) const
@@ -21,7 +24,8 @@ void UDGAttributeSet::GetLifetimeReplicatedProps ( TArray<class FLifetimePropert
 	DOREPLIFETIME_CONDITION_NOTIFY ( UDGAttributeSet ,  MaxHealth, COND_None , REPNOTIFY_Always );
 	DOREPLIFETIME_CONDITION_NOTIFY ( UDGAttributeSet ,    Stamina, COND_None , REPNOTIFY_Always );
 	DOREPLIFETIME_CONDITION_NOTIFY ( UDGAttributeSet , MaxStamina, COND_None , REPNOTIFY_Always );
-
+	DOREPLIFETIME_CONDITION_NOTIFY ( UDGAttributeSet ,      Lives, COND_None , REPNOTIFY_Always );
+	DOREPLIFETIME_CONDITION_NOTIFY ( UDGAttributeSet ,   MaxLives, COND_None , REPNOTIFY_Always );
 }
 
 void UDGAttributeSet::OnRep_Health ( const FGameplayAttributeData& OldHealth ) const
@@ -42,5 +46,15 @@ void UDGAttributeSet::OnRep_Stamina ( const FGameplayAttributeData& OldStamina )
 void UDGAttributeSet::OnRep_MaxStamina ( const FGameplayAttributeData& OldMaxStamina ) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY ( UDGAttributeSet , MaxStamina, OldMaxStamina );
+}
+
+void UDGAttributeSet::OnRep_Lives ( const FGameplayAttributeData& OldLives ) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY ( UDGAttributeSet , Lives, OldLives);
+}
+
+void UDGAttributeSet::OnRep_MaxLives ( const FGameplayAttributeData& OldMaxLives ) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY ( UDGAttributeSet , MaxLives , OldMaxLives);
 }
 

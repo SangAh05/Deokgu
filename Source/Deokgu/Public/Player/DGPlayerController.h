@@ -63,10 +63,10 @@ private:
 	float maxPitch = 20.f;
 
 	UPROPERTY(EditAnywhere, Category = "Move|Speed")
-	float walkSpeed = 150.0f;
+	float walkSpeed = 100.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Move|Speed")
-	float runSpeed = 400.0f;
+	float runSpeed = 300.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Move|Speed")
 	float sprintSpeed = 600.0f;
